@@ -10,6 +10,9 @@ import { ResolutionAttempt } from './entities/resolutionattempt.entity';
 import { ContactPersonService } from './contact-person/contact-person.service';
 import { ContactPersonController } from './contact-person/contact-person.controller';
 import { IssueService } from './issue/issue.service';
+import { IssueController } from './issue/issue.controller';
+import { IssueStatusService } from './issue-status/issue-status.service';
+import { IssueStatusController } from './issue-status/issue-status.controller';
 
 
 @Module({
@@ -21,7 +24,7 @@ import { IssueService } from './issue/issue.service';
       username: 'root',
       password: 'hank1989',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true, 
+      synchronize: true,
       autoLoadEntities: true,
     }),
 
@@ -34,7 +37,7 @@ import { IssueService } from './issue/issue.service';
       ResolutionAttempt,
     ]),
   ],
-  controllers: [AppController, ContactPersonController],
-  providers: [AppService, ContactPersonService, IssueService],
+  controllers: [AppController, ContactPersonController, IssueController, IssueStatusController],
+  providers: [AppService, ContactPersonService, IssueService, IssueStatusService],
 })
-export class AppModule {}
+export class AppModule { }

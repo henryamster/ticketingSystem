@@ -2,37 +2,30 @@ import { Injectable, Query } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult, DeleteResult, QueryBuilder } from 'typeorm';
 import { ContactPerson } from './../entities/contactperson.entity';
-import { catchError, map, skip, take, tap } from 'rxjs/operators';
-import { from, noop, Observable, of, pipe } from 'rxjs';
+import { catchError, defaultIfEmpty, isEmpty, map, skip, take, tap } from 'rxjs/operators';
+import { from, noop, Observable, of, pipe, throwError } from 'rxjs';
 @Injectable()
 export class ContactPersonService {
   constructor(
     @InjectRepository(ContactPerson)
-    private readonly contactPersonRepository: Repository<ContactPerson>,
-    //private readonly querybuilder:QueryBuilder<ContactPerson>,
+    private readonly contactPersonRepository: Repository<ContactPerson>
   ) { }
 
   create(contactPerson: ContactPerson): Observable<ContactPerson> {
     return from(this.contactPersonRepository.save(contactPerson));
   }
 
-  readAll(skipNumber = 0, takeNumber = 20): Observable<ContactPerson[]> {
+  readAll(skipNumber: number, takeNumber: number): Observable<ContactPerson[]> {
 
-    return from(this.contactPersonRepository.find())
-      .pipe(skip(skipNumber), take(takeNumber));
+    return from(this.contactPersonRepository.find({
+      skip: skipNumber,
+      take: takeNumber,
+    }))
+
   }
 
-  readOne(id: number): Observable<ContactPerson | Error> {
-
-    const lookupPerson = this.contactPersonRepository
-      .createQueryBuilder("contactPerson")
-      .where(`contactPerson.id = :id, {id:${id}}`).getOneOrFail()
-      .then(
-        ()=>this.contactPersonRepository.findOne(id),
-        ()=>Error(`Could not retrieve Contact Person with ID" ${id}: No contact person exists.`)
-      
-      )
-    return from(lookupPerson)
+  readOne(id: number): Observable<ContactPerson> {
+    return from(this.contactPersonRepository.findOne(+id));
 
   }
 
@@ -46,4 +39,12 @@ export class ContactPersonService {
   delete(contactPersonId: number): Observable<DeleteResult> {
     return from(this.contactPersonRepository.delete(contactPersonId));
   }
+
+  async checkIfExists(id: number): Promise<boolean> {
+    return await this.contactPersonRepository
+      .createQueryBuilder('entity')
+      .where('entity.id= :id', { id: +id })
+      .getCount() > 0
+  }
+
 }
