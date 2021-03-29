@@ -31,7 +31,7 @@ export class ContactPersonController {
     return this.contactPersonService.readAll(skip, take)
       //handle no results found
       .pipe(
-        map(stream => stream != null ?
+        map(stream => !isEmpty() ?
           ExceptionFactory(
             {
               status: `Empty Result Set`,

@@ -12,7 +12,7 @@ export class IssueService {
     private readonly issueRepository: Repository<Issue>,
   ) { }
 
-  create(issue: Issue): Observable<Issue | Error> {
+  create(issue: Issue): Observable<Issue> {
     return from(this.issueRepository.save(issue));
   }
 

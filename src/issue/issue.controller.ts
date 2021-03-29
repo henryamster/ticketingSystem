@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpException, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { isEmpty, map } from 'rxjs/operators';
 import { IssueService } from './issue.service';
 import { Issue } from './../entities/issue.entity';
 import { ExceptionFactory } from './../exception-factory/exception-factory';
@@ -19,7 +19,7 @@ export class IssueController {
         return this.issueService.readAll(skip, take)
             //handle no results found
             .pipe(
-                map(stream => stream != null ?
+                map(stream => !isEmpty() ?
                     ExceptionFactory(
                         {
                             status: `Empty Result Set`,
