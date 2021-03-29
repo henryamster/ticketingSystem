@@ -1,3 +1,4 @@
+import { IsInt, Min } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -12,6 +13,8 @@ import { ResolutionAttempt } from './resolutionattempt.entity';
 @Entity()
 export class IssueTrail {
   @PrimaryGeneratedColumn()
+  @IsInt()
+  @Min(1)
   id: number;
 
   @OneToOne(() => Issue)

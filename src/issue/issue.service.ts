@@ -10,32 +10,28 @@ export class IssueService {
   constructor(
     @InjectRepository(Issue)
     private readonly issueRepository: Repository<Issue>,
-  ) { }
+  ) {}
 
   create(issue: Issue): Observable<Issue> {
     return from(this.issueRepository.save(issue));
   }
 
   readAll(skipNumber = 0, takeNumber = 20): Observable<Issue[]> {
-    return from(this.issueRepository.find())
-      .pipe(skip(skipNumber), take(takeNumber));
+    return from(this.issueRepository.find()).pipe(
+      skip(skipNumber),
+      take(takeNumber),
+    );
   }
 
   readOne(id: number): Observable<Issue> {
-    return from(this.issueRepository
-      .findOne(id))
-
+    return from(this.issueRepository.findOne(id));
   }
 
   update(issue: Issue): Observable<UpdateResult> {
-    return from(this.issueRepository.update(
-      issue.id,
-      issue,
-    ))
+    return from(this.issueRepository.update(issue.id, issue));
   }
 
   delete(issueId: number): Observable<DeleteResult> {
     return from(this.issueRepository.delete(issueId));
   }
-
 }

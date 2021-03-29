@@ -14,15 +14,15 @@ import { IssueController } from './issue/issue.controller';
 import { IssueStatusService } from './issue-status/issue-status.service';
 import { IssueStatusController } from './issue-status/issue-status.controller';
 
-
 @Module({
   imports: [
     // connection string
     TypeOrmModule.forRoot({
       type: 'mysql',
+      port: 3301,
       database: 'weepEnd',
-      username: 'root',
-      password: 'hank1989',
+      username: 'root2',
+      password: 'root',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
       autoLoadEntities: true,
@@ -37,7 +37,17 @@ import { IssueStatusController } from './issue-status/issue-status.controller';
       ResolutionAttempt,
     ]),
   ],
-  controllers: [AppController, ContactPersonController, IssueController, IssueStatusController],
-  providers: [AppService, ContactPersonService, IssueService, IssueStatusService],
+  controllers: [
+    AppController,
+    ContactPersonController,
+    IssueController,
+    IssueStatusController,
+  ],
+  providers: [
+    AppService,
+    ContactPersonService,
+    IssueService,
+    IssueStatusService,
+  ],
 })
-export class AppModule { }
+export class AppModule {}

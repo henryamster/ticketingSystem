@@ -1,23 +1,23 @@
+import { IsDate, IsInt, Min, MinDate } from 'class-validator';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  TableForeignKey,
   OneToOne,
-  JoinColumn,
-  OneToMany,
-  ManyToOne,
 } from 'typeorm';
 import { ContactPerson } from './contactperson.entity';
 
 @Entity()
 export class Issue {
   @PrimaryGeneratedColumn()
+  @IsInt()
+  @Min(1)
   id: number;
 
   @OneToOne(() => ContactPerson)
-  contactPersonId: ContactPerson;
+  contactPerson: ContactPerson;
 
   @Column()
+  @IsDate()
   createdOn: Date;
 }
