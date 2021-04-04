@@ -19,10 +19,8 @@ export class ResolutionAttempt {
   @ManyToOne(() => IssueTrail, (issueTrail) => issueTrail.resolutionAttempts)
   issueTrail: IssueTrail;
 
-
   @OneToOne(() => IssueStatus)
   beginningStatus: IssueStatus;
-
 
   @OneToOne(() => IssueStatus)
   endingStatus: IssueStatus;

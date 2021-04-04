@@ -10,21 +10,26 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { isEmpty, map, tap } from 'rxjs/operators';
-import { ContactPerson } from 'src/entities/contactperson.entity';
+import {
+  ContactPerson,
+  IContactPersonSearch,
+} from 'src/entities/contactperson.entity';
 import { ContactPersonService } from './contact-person.service';
 import { ExceptionFactory } from './../exception-factory/exception-factory';
-
+import { ApplicationWideSettings } from './../app.config';
 @Controller('contact-person')
 export class ContactPersonController {
-  constructor(private contactPersonService: ContactPersonService) { }
+  constructor(
+    private contactPersonService: ContactPersonService,
+    private applicationWideSettings: ApplicationWideSettings,
+  ) { }
 
   @Get()
   read(
-    @Param('skip') skip = 0,
-    @Param('take') take = 20,
-    //@Optional() @Param('search') search: ContactPerson,
+    @Param('skip') skip = ApplicationWideSettings.DEFAULT_SKIP,
+    @Param('take') take = ApplicationWideSettings.DEFAULT_TAKE,
   ): Observable<ContactPerson[] | HttpException> {
     return (
       this.contactPersonService
@@ -43,6 +48,39 @@ export class ContactPersonController {
           ),
         )
     );
+  }
+
+  @Post('search')
+  search(
+    @Param('skip') skip = ApplicationWideSettings.DEFAULT_SKIP,
+    @Param('take') take = ApplicationWideSettings.DEFAULT_TAKE,
+    @Body('contactPerson') contactPerson: IContactPersonSearch,
+  ): Observable<ContactPerson[] | HttpException> {
+
+    if (contactPerson == null) {
+      return of(ExceptionFactory({
+        status: `Empty Query Parameters`,
+        success: false,
+        message: `Could not perform search with no parameters.`,
+        code: 200,
+      })
+
+      )
+    }
+
+    return this.contactPersonService.search(skip, take, contactPerson)
+      .pipe(
+        map((stream) =>
+          (stream != null)
+            ? stream
+            : ExceptionFactory({
+              status: `Empty Result Set`,
+              success: false,
+              message: `No contact people found.`,
+              code: 200,
+            })
+        )
+      )
   }
 
   @Get(':id')

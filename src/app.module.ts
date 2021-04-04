@@ -13,6 +13,7 @@ import { IssueService } from './issue/issue.service';
 import { IssueController } from './issue/issue.controller';
 import { IssueStatusService } from './issue-status/issue-status.service';
 import { IssueStatusController } from './issue-status/issue-status.controller';
+import { ApplicationWideSettings } from './app.config';
 
 @Module({
   imports: [
@@ -44,10 +45,11 @@ import { IssueStatusController } from './issue-status/issue-status.controller';
     IssueStatusController,
   ],
   providers: [
+    ApplicationWideSettings,
     AppService,
     ContactPersonService,
     IssueService,
     IssueStatusService,
   ],
 })
-export class AppModule {}
+export class AppModule { }

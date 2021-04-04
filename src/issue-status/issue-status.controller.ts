@@ -14,15 +14,16 @@ import { isEmpty, map, tap } from 'rxjs/operators';
 import { IssueStatus } from 'src/entities/issuestatus.entity';
 import { IssueStatusService } from './issue-status.service';
 import { ExceptionFactory } from './../exception-factory/exception-factory';
+import { ApplicationWideSettings } from 'src/app.config';
 
 @Controller('issue-status')
 export class IssueStatusController {
-  constructor(private issueStatusService: IssueStatusService) {}
+  constructor(private issueStatusService: IssueStatusService) { }
 
   @Get()
   read(
-    @Param('skip') skip = 0,
-    @Param('take') take = 20,
+    @Param('skip') skip = ApplicationWideSettings.DEFAULT_SKIP,
+    @Param('take') take = ApplicationWideSettings.DEFAULT_TAKE,
   ): Observable<IssueStatus[] | HttpException> {
     return (
       this.issueStatusService
@@ -32,11 +33,11 @@ export class IssueStatusController {
           map((stream) =>
             !isEmpty()
               ? ExceptionFactory({
-                  status: `Empty Result Set`,
-                  success: false,
-                  message: `No issue statuses found.`,
-                  code: 200,
-                })
+                status: `Empty Result Set`,
+                success: false,
+                message: `No issue statuses found.`,
+                code: 200,
+              })
               : stream,
           ),
         )
@@ -54,13 +55,13 @@ export class IssueStatusController {
         .pipe(
           map((stream) =>
             stream != null
-              ? stream
-              : ExceptionFactory({
-                  status: `Empty Result Set`,
-                  success: false,
-                  message: `No issue status with id ${id}.`,
-                  code: 200,
-                }),
+              ? ExceptionFactory({
+                status: `Empty Result Set`,
+                success: false,
+                message: `No issue status with id ${id}.`,
+                code: 200,
+              })
+              : stream,
           ),
         )
     );

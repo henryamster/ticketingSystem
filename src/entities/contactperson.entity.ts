@@ -23,7 +23,10 @@ export class ContactPerson {
   okayToContact: boolean;
 }
 
-// export interface ContactPersonInterface extends ContactPerson {
-//     id?,
-
-// }
+export interface IContactPersonSearch {
+  id?: number;
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  okayToContact: boolean;
+}

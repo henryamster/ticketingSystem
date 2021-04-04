@@ -14,14 +14,15 @@ import { isEmpty, map } from 'rxjs/operators';
 import { IssueService } from './issue.service';
 import { Issue } from './../entities/issue.entity';
 import { ExceptionFactory } from './../exception-factory/exception-factory';
+import { ApplicationWideSettings } from 'src/app.config';
 @Controller('issue')
 export class IssueController {
-  constructor(private issueService: IssueService) {}
+  constructor(private issueService: IssueService) { }
 
   @Get()
   read(
-    @Param('skip') skip = 0,
-    @Param('take') take = 20,
+    @Param('skip') skip = ApplicationWideSettings.DEFAULT_SKIP,
+    @Param('take') take = ApplicationWideSettings.DEFAULT_TAKE,
   ): Observable<Issue[] | HttpException> {
     return (
       this.issueService
@@ -29,13 +30,13 @@ export class IssueController {
         //handle no results found
         .pipe(
           map((stream) =>
-            !isEmpty()
+            stream != null
               ? ExceptionFactory({
-                  status: `Empty Result Set`,
-                  success: false,
-                  message: `No issues found.`,
-                  code: 200,
-                })
+                status: `Empty Result Set`,
+                success: false,
+                message: `No issues found.`,
+                code: 200,
+              })
               : stream,
           ),
         )
@@ -55,11 +56,11 @@ export class IssueController {
             stream != null
               ? stream
               : ExceptionFactory({
-                  status: `Empty Result Set`,
-                  success: false,
-                  message: `No issue with id ${id}.`,
-                  code: 200,
-                }),
+                status: `Empty Result Set`,
+                success: false,
+                message: `No issue with id ${id}.`,
+                code: 200,
+              }),
           ),
         )
     );
