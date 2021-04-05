@@ -21,3 +21,8 @@ export class Issue {
   @IsDate()
   createdOn: Date;
 }
+export interface IIssueSearch {
+  id?: number;
+  contactPerson?: string;
+  createdOn?: string;
+}

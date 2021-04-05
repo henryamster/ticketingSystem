@@ -30,3 +30,9 @@ export class IssueTrail {
   @Column()
   resolved: boolean;
 }
+export interface IIssueTrailSearch {
+  id?: number;
+  issue?: string;
+  resolutionAttempts?: string;
+  resolved?: boolean;
+}

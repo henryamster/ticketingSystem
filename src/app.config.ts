@@ -1,10 +1,14 @@
 /* eslint-disable prettier/prettier */
 import { Like } from 'typeorm';
+import { ContactPerson } from './entities/contactperson.entity';
+import { FindOneOptions } from 'typeorm';
 
 export class ApplicationWideSettings {
     // Constants
     public static DEFAULT_SKIP = 0;
     public static DEFAULT_TAKE = 20;
+
+
 
     // Public methods
 
@@ -23,5 +27,7 @@ export class ApplicationWideSettings {
                 return { [key]: Like(`%${value}%`) };
             });
     }
+
+    public static generateWhereLikeClause = (key, value) => { return { [key]: Like(`%${value}%`) } };
 
 }

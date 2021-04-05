@@ -14,3 +14,8 @@ export class IssueStatus {
   @Column()
   statusDescription: string;
 }
+export interface IIssueStatusSearch {
+  id?: number;
+  statusName?: string;
+  statusDescription?: string;
+}

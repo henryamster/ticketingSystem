@@ -14,6 +14,7 @@ import {
 
 import { from, noop, Observable, of, pipe, throwError } from 'rxjs';
 import { ApplicationWideSettings } from 'src/app.config';
+import { ExceptionFactory } from 'src/exception-factory/exception-factory';
 @Injectable()
 export class ContactPersonService {
   constructor(
@@ -30,6 +31,9 @@ export class ContactPersonService {
       this.contactPersonRepository.find({
         skip: skipNumber,
         take: takeNumber,
+        order: {
+          id: 'DESC'
+        }
       }),
     );
   }
@@ -47,6 +51,7 @@ export class ContactPersonService {
         where: valuesArray,
         skip: skipNumber,
         take: takeNumber,
+        order: { id: "DESC" },
       }),
     );
   }

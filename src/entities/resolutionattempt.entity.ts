@@ -38,3 +38,13 @@ export class ResolutionAttempt {
   @Column()
   employee: string;
 }
+export interface IResolutionAttemptSearch {
+  id?: number;
+  issueTrail?: string;
+  beginningStatus?: IssueStatus;
+  endingStatus?: IssueStatus;
+  createdOn?: Date;
+  diagnosis?: string;
+  nextStep?: string;
+  employee?: string;
+}

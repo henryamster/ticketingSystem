@@ -10,7 +10,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { Observable, of } from 'rxjs';
+import { noop, Observable, of } from 'rxjs';
 import { isEmpty, map, tap } from 'rxjs/operators';
 import {
   ContactPerson,
@@ -56,31 +56,49 @@ export class ContactPersonController {
     @Param('take') take = ApplicationWideSettings.DEFAULT_TAKE,
     @Body('contactPerson') contactPerson: IContactPersonSearch,
   ): Observable<ContactPerson[] | HttpException> {
-
     if (contactPerson == null) {
-      return of(ExceptionFactory({
-        status: `Empty Query Parameters`,
-        success: false,
-        message: `Could not perform search with no parameters.`,
-        code: 200,
-      })
-
-      )
+      return of(
+        ExceptionFactory({
+          status: `Empty Query Parameters`,
+          success: false,
+          message: `Could not perform search with no parameters.`,
+          code: 200,
+        }),
+      );
     }
 
-    return this.contactPersonService.search(skip, take, contactPerson)
-      .pipe(
-        map((stream) =>
-          (stream != null)
-            ? stream
-            : ExceptionFactory({
-              status: `Empty Result Set`,
-              success: false,
-              message: `No contact people found.`,
-              code: 200,
-            })
+    if (
+      Object
+        .entries(contactPerson)
+        .filter(
+          ([key, value]) =>
+            contactPerson[value] !== ('' || null) ||
+            contactPerson[key] !== ('' || null),
         )
-      )
+        .length < Object.entries(contactPerson).length
+    ) {
+      return of(
+        ExceptionFactory({
+          status: `Empty Query Parameters`,
+          success: false,
+          message: `At least one of your query parameters contained an empty value.`,
+          code: 200,
+        }),
+      );
+    }
+
+    return this.contactPersonService.search(skip, take, contactPerson).pipe(
+      map((stream) =>
+        stream.length > 0
+          ? stream
+          : ExceptionFactory({
+            status: `Empty Result Set`,
+            success: false,
+            message: `No contact people found.`,
+            code: 200,
+          }),
+      ),
+    );
   }
 
   @Get(':id')
